@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script>
+
+function initRecording()
+{
+	let audioIN = { audio: true };
+
+	navigator.mediaDevices.getUserMedia(audioIN)
+	.then(function (mediaStreamObj) {
+
+		let audio = document.querySelector('audio');
+
+		let mediaRecorder = new MediaRecorder(mediaStreamObj);
+
+		let startBtn = document.getElementById('start-btn');
+		let stopBtn = document.getElementById('stop-btn');
+		
+        startBtn.addEventListener("click", function (ev) {
+		mediaRecorder.start();
+        });
+
+        stopBtn.addEventListener("click", function (ev) {
+            mediaRecorder.stop();
+        });
+	
+
+		mediaRecorder.ondataavailable = function (ev) {
+		dataArray.push(ev.data);
+		}
+
+		let dataArray = [];
+
+		mediaRecorder.onstop = function (ev) {
+
+		let audioData = new Blob(dataArray,{ 'type': 'audio/wav;' });
+			
+		dataArray = [];
+		let audioSrc = window.URL.createObjectURL(audioData);
+
+        let playAudio = document.getElementById('audioPlay');
+		playAudio.src = audioSrc;
+        console.log("Audio Stop")
+		}
+	})
+	.catch(function (err) {
+		console.log(err.name, err.message);
+	});
+}
+</script>
+</head>
+<button onclick="initRecording()" style="border:1px solid black; padding:1rem 2rem; background-color:white; border-radius:15px">Init Recording</button>
+<body style="background-color:rgb(101, 185, 17); ">
+<!--button for 'start recording'-->
+<p>
+	<button id="start-btn">START RECORDING</button>
+			 
+	<button id="stop-btn" >STOP RECORDING</button>
+	<!--button for 'stop recording'-->
+</p>
+
+
+<!--for play the audio-->
+<audio id="audioPlay" controls></audio>
+</body>
+
+</html>

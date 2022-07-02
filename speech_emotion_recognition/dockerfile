@@ -1,0 +1,12 @@
+FROM python:3.8
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED=1
+WORKDIR /ser
+COPY requirements.txt /ser/
+RUN python -m venv serenv
+RUN pip install -r requirements.txt
+COPY . /ser/
+
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
